@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WasmahTask</string>
+    <string name="empty_data">there is no data found</string>
+    <string name="error_connection">make sure that internet is connected</string>
+    <string name="google_maps_key">AIzaSyCcSHeyyar0bsNqjF1LIcxlGmhigkRwQDc</string>
+    <string name="get_fav">All Favorite</string>
+</resources>
