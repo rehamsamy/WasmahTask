@@ -77,6 +77,7 @@ public class LocationMapFragment extends Fragment {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(33, 65), 2));
         googleMap.setOnCameraIdleListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
         addItems(clusterManager,refCountryCodesItems);
 
         clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItem>() {
