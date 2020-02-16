@@ -13,6 +13,6 @@ public interface RetrofitInstance {
 
     @GET("/users/JeffreyWay/repos")
     Call<List<JeffKellyModel>> getJeffKellyList(@Query("page")int page,
-                                                @Query("amp;per_page") int limit);
+                                                @Query("per_page") int limit);
 
 }

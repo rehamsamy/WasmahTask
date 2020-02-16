@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +40,9 @@ public class JeffKellyFragment extends Fragment {
     RetrofitInstance retrofitInstance;
     NetworkAvailable networkAvailable;
     JeffKellyAdapter adapter;
-    int current_page = 1;
+    int current_page = 0;
     List<JeffKellyModel> jeffModels=new ArrayList<>();
+
 
     @Nullable
     @Override
@@ -54,7 +56,7 @@ public class JeffKellyFragment extends Fragment {
         if(networkAvailable.isNetworkAvailable()){
             jeffModels.clear();
             buildRecyclerForJeff();
-            getJeffKellyList(current_page);
+            getJeffKellyModels(current_page);
         }else {
             Toast.makeText(getContext(), getString(R.string.error_connection), Toast.LENGTH_SHORT).show();
         }
@@ -67,26 +69,29 @@ public class JeffKellyFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         adapter = new JeffKellyAdapter(getContext(), jeffModels);
         recyclerView.setAdapter(adapter);
+
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 current_page++;
-                //getJeffKellyList(current_page);
+                getJeffKellyModels(current_page);
             }
         });
 
 
     }
 
-    private void getJeffKellyList(int current_page) {
+    private void getJeffKellyList(final int current_pagee) {
        // progressBar.setVisibility(View.VISIBLE);
         JeffViewModel model = ViewModelProviders.of(getActivity()).get(JeffViewModel.class);
-        model.getJeffModelsList(current_page, progressBar).observe(getActivity(), new Observer<List<JeffKellyModel>>() {
+        model.getJeffModelsList(current_pagee, progressBar,3,  adapter,jeffModels).observe(getActivity(), new Observer<List<JeffKellyModel>>() {
             @Override
             public void onChanged(List<JeffKellyModel> jeffKellyModels) {
                 if(jeffKellyModels.size()>0) {
                     Log.v("TAG", "ccc" + jeffKellyModels.size());
                     jeffModels.addAll(jeffKellyModels);
+                    //adapter.notifyDataSetChanged();
+                    jeffModels=jeffKellyModels;
                     adapter.notifyDataSetChanged();
                 }else if(current_page==1&&jeffKellyModels.size()==0){
                     return;
@@ -95,5 +100,38 @@ public class JeffKellyFragment extends Fragment {
             }
         });
     }
+
+
+   void  getJeffKellyModels(int current_page){
+       progressBar.setVisibility(View.VISIBLE);
+       RetrofitInstance retrofitInstance= ClientInstance.getRetrofit();
+       retrofitInstance= ClientInstance.getRetrofit();
+       Call<List<JeffKellyModel>> call=retrofitInstance.getJeffKellyList(current_page,3);
+       call.enqueue(new Callback<List<JeffKellyModel>>() {
+           @Override
+           public void onResponse(Call<List<JeffKellyModel>> call, Response<List<JeffKellyModel>> response) {
+               if(response.isSuccessful()){
+                  jeffModels.addAll(response.body());
+                   adapter.notifyDataSetChanged();
+                   Log.v("TAG","xxx "+current_page);
+                   progressBar.setVisibility(View.GONE);
+
+                   if(response.body().size()==0){
+                       Toast.makeText(getContext(), "no item more", Toast.LENGTH_LONG).show();
+                       progressBar.setVisibility(View.GONE);
+                   }
+
+               }
+           }
+
+           @Override
+           public void onFailure(Call<List<JeffKellyModel>> call, Throwable t) {
+               Log.v("TAG","xxx"+t.getMessage());
+               progressBar.setVisibility(View.GONE);
+               //progressBar.setVisibility(View.GONE);
+           }
+       });
+
+   }
 }
 
