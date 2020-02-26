@@ -21,21 +21,21 @@ import retrofit2.Response;
 
 public class JeffViewModel extends ViewModel {
 
-    private MutableLiveData<List<JeffKellyModel>> jeffModels;
+   MutableLiveData<List<JeffKellyModel>> jeffModels=new MutableLiveData<>();
 
 
-    public LiveData<List<JeffKellyModel>> getJeffModelsList(int current_page,ProgressBar progressBar,int x,JeffKellyAdapter adapter,List<JeffKellyModel> jeffKellyModels ){
+    public LiveData<List<JeffKellyModel>> getJeffModelsList(int current_page,ProgressBar progressBar,int x){
         if(jeffModels==null){
             jeffModels=new MutableLiveData<>();
-  progressBar.setVisibility(View.VISIBLE);
-            getDataFromRetrofit(current_page,progressBar,x,adapter,jeffKellyModels);
-        }
+            progressBar.setVisibility(View.VISIBLE);
+                getDataFromRetrofit(current_page, progressBar, x);
 
+        }
 
         return jeffModels;
     }
 
-    private void getDataFromRetrofit(int current_page, ProgressBar progressBar, int  x,JeffKellyAdapter adapter ,List<JeffKellyModel> jeffKellyModels){
+    public void getDataFromRetrofit(int current_page, ProgressBar progressBar, int  x){
         progressBar.setVisibility(View.VISIBLE);
         RetrofitInstance retrofitInstance= ClientInstance.getRetrofit();
         retrofitInstance= ClientInstance.getRetrofit();
@@ -46,8 +46,6 @@ public class JeffViewModel extends ViewModel {
                 if(response.isSuccessful()){
 
                     jeffModels.setValue(response.body());
-                    //jeffKellyModels.addAll(response.body());
-                    adapter.notifyDataSetChanged();
                     Log.v("TAG","xxx "+current_page);
                     progressBar.setVisibility(View.GONE);
 

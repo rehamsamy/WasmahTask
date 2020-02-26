@@ -1,6 +1,9 @@
 package com.example.wasmahtask.models;
 
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.google.gson.annotations.SerializedName;
 
 
@@ -808,6 +811,20 @@ public class JeffKellyModel{
 	public int getForksCount(){
 		return forksCount;
 	}
+
+
+
+	public static final DiffUtil.ItemCallback<JeffKellyModel> CALLBACK = new DiffUtil.ItemCallback<JeffKellyModel>() {
+		@Override
+		public boolean areItemsTheSame(@NonNull JeffKellyModel photos, @NonNull JeffKellyModel t1) {
+			return photos.id == t1.id;
+		}
+
+		@Override
+		public boolean areContentsTheSame(@NonNull JeffKellyModel photos, @NonNull JeffKellyModel t1) {
+			return true;
+		}
+	};
 
 	@Override
  	public String toString(){
